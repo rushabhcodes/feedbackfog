@@ -18,7 +18,7 @@ import Link from "next/link";
 import { signInSchema } from "@/schemas/signInSchema";
 import { signIn } from "next-auth/react";
 
-const page = () => {
+const Page = () => {
   const { toast } = useToast();
   const route = useRouter();
 
