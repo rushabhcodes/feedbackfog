@@ -15,7 +15,7 @@ import { useSession } from "next-auth/react";
 import React, { use, useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
-export default function page() {
+export default function Page() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isSwitchLoading, setIsSwitchLoading] = useState(false);
