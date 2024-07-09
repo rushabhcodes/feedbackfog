@@ -15,7 +15,7 @@ import { useSession } from "next-auth/react";
 import React, { use, useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
-const page = () => {
+export default function page() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isSwitchLoading, setIsSwitchLoading] = useState(false);
@@ -189,5 +189,3 @@ const page = () => {
     </div>
   );
 };
-
-export default page;
