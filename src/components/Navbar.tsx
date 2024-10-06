@@ -3,6 +3,7 @@ import Link from "next/link";
 import { useSession, signOut } from "next-auth/react";
 import { User } from "next-auth";
 import { Button } from "./ui/button";
+import { Github } from "lucide-react";
 
 const Navbar = () => {
   const { data: session, status } = useSession();
@@ -19,15 +20,26 @@ const Navbar = () => {
             <>
               <span className="mr-4 ">
                 Welcome, {user?.username || user?.email}
-              </span> 
-              <Button className="w-full md:w-auto" onClick={() => signOut()}>
-                Sign Out
-              </Button>
+              </span>
+              <div className="flex gap-2">
+              <Link href="https://github.com/rushabhcodes/feedbackfog">
+                  <Button className="hidden md:block" variant={"secondary"}><Github/></Button>
+                </Link>
+                <Button className="w-full md:w-auto" onClick={() => signOut()}>
+                  Sign Out
+                </Button>
+                
+              </div>
             </>
           ) : (
-            <Link href="/sign-in">
-              <Button className="w-full md:w-auto ">Sign In</Button>
-            </Link>
+            <div className="flex gap-2">
+              <Link href="https://github.com/rushabhcodes/feedbackfog">
+                  <Button className="hidden md:block" variant={"secondary"}><Github/></Button>
+                </Link>
+              <Link href="/sign-in">
+                <Button className="w-full md:w-auto ">Sign In</Button>
+              </Link>
+            </div>
           )}
         </div>
       </nav>
