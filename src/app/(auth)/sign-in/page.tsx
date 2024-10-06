@@ -120,8 +120,8 @@ const Page = () => {
           </div>
         </div>
       </div>
-    </>
+    </>     
   );
 };
 
-export default page;
+export default Page;

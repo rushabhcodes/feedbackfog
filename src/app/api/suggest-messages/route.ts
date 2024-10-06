@@ -1,41 +1,54 @@
-// Allow streaming responses up to 30 seconds
-import { createGoogleGenerativeAI } from "@ai-sdk/google";
-import { streamText } from "ai";
+import { NextResponse } from 'next/server';
+import { google } from '@ai-sdk/google';
+import { generateText } from 'ai';
 
-const google = createGoogleGenerativeAI({
-  // custom settings
-  apiKey: process.env.GOOGLE_AI_API_KEY,
-});
-
+// Define an async function for handling the API request
 export async function GET(req: Request) {
   try {
-    const prompt =
-      "Create a list of three open-ended and engaging questions formatted as a single string. Each question should be separated by '||'. These questions are for an anonymous social messaging platform, like Qooh.me, and should be suitable for a diverse audience. Avoid personal or sensitive topics, focusing insted on universal themes that encourage friendly interaction. For example your output should be structered like this: 'What's your favorite book and why?||What's the best advice you've ever received?||What's your dream vacation destination?' Give different questions avery time";
+    // Parse URL to extract query parameters from the request
+    const url = new URL(req.url);
 
-    const result = await streamText({
-      model: google("models/gemini-1.5-pro-latest"),
-      prompt: prompt,
-      maxTokens: 400,
+    // Get the user's custom role (e.g., Influencer) or default to 'Influencer'
+    const role = url.searchParams.get('role') || 'Influencer';
+
+    // Create a broader set of random contexts
+    const contexts = [
+      `As an expert in the ${role} field, what might fans ask?`,
+      `Fans of a prominent ${role} might be curious about these topics:`,
+      `Imagine a ${role} interacting with their fans. What questions could arise?`,
+      `Consider a ${role} answering fan queries. What are three questions they might encounter?`,
+      `If you were a ${role}, what unique questions would your fans ask?`
+    ];
+    
+    // Randomly select a context
+    const randomContext = contexts[Math.floor(Math.random() * contexts.length)];
+
+    // Construct the prompt using the user's role and a random context
+    const prompt = `${randomContext} Generate three different questions likely to be asked. Ensure each question is unique and provide variation.`;
+
+    // Randomly vary the temperature
+    const temperature = Math.random() * 0.5 + 0.5; // Random between 0.5 and 1.0
+
+    // Generate text using the Google model
+    const { text } = await generateText({
+      model: google('models/gemini-1.5-flash-latest'),
+      prompt,
+      system: 'You return three questions in array format. Do not return anything else.',
+      temperature,
     });
 
-    //  return Response.json({
-    //   success: true,
-    //   message: "Suggested messages fetched successfully",
-    //   messages: result.toTextStreamResponse(),  // Assuming the API response contains an array of messages
-    // });
-     return result;
-   
+    // Assuming the AI response is a stringified array, parse it into an actual array
+    const questions = JSON.parse(text);
 
+    // Ensure the response is an array of exactly three strings
+    if (Array.isArray(questions) && questions.length === 3) {
+      return NextResponse.json({ questions });
+    } else {
+      throw new Error('Generated response is not an array with three questions');
+    }
   } catch (error) {
-    console.error("An Unexpected Error Occurred: ", error);
-    return Response.json(
-      {
-        success: false,
-        message: "Failed to suggest messages",
-      },
-      {
-        status: 500,
-      }
-    );
+    // Handle errors and return a failure response
+    return NextResponse.json({ error: (error as Error).message }, { status: 500 });
   }
 }
+ 
