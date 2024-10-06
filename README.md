@@ -30,7 +30,7 @@ Welcome to FeedbackFog! This project allows you to send and receive anonymous me
 1. Clone the repository:
 
     ```bash
-    git clone https://github.com/yourusername/FeedbackFog.git
+    git clone https://github.com/rushabhcodes/FeedbackFog.git
     ```
 
 2. Navigate to the project directory:
