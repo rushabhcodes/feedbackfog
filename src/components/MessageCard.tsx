@@ -17,7 +17,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Button } from "./ui/button";
-import { DeleteIcon, LucideDelete, X } from "lucide-react";
+import { X } from "lucide-react"; // Fixed this import, using 'X' from lucide-react
 import { Message } from "@/model/User.model";
 import { useToast } from "./ui/use-toast";
 import axios from "axios";
@@ -31,24 +31,30 @@ type MessageCardProps = {
 const MessageCard = ({ message, onMessageDelete }: MessageCardProps) => {
   const { toast } = useToast();
   const handleDeleteConfirm = async () => {
-    const response = await axios.delete<ApiResponse>(
-      `/api/delete-message/${message._id}`
-    );
-    console.log(response.data);
-    toast({ title: response.data.message });
-    onMessageDelete(message?._id as string);
+    try {
+      const response = await axios.delete<ApiResponse>(
+        `/api/delete-message/${message._id}`
+      );
+      console.log(response.data);
+      toast({ title: response.data.message });
+      onMessageDelete(message._id); // Removed optional chaining, assuming _id is always present
+    } catch (error) {
+      toast({ title: "Failed to delete the message", status: "error" });
+    }
   };
 
-  const options = {
+  const options: Intl.DateTimeFormatOptions = {
     year: "numeric",
     month: "long",
     day: "numeric",
     hour: "numeric",
     minute: "numeric",
     second: "numeric",
-    timeZone: "Asia/Calcutta", // Ensure date is interpreted in UTC timezone
-  } as Intl.DateTimeFormatOptions;
+    timeZone: "Asia/Calcutta",
+  };
+
   const date = new Date(message.createdAt);
+
   return (
     <div>
       <Card>
