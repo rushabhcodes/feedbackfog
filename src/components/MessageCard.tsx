@@ -37,7 +37,7 @@ const MessageCard = ({ message, onMessageDelete }: MessageCardProps) => {
       );
       console.log(response.data);
       toast({ title: response.data.message });
-      onMessageDelete(message._id); // Removed optional chaining, assuming _id is always present
+      onMessageDelete(message._id as string); // Removed optional chaining, assuming _id is always present
     } catch (error) {
       toast({ title: "Failed to delete the message", status: "error" });
     }
